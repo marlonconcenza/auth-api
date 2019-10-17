@@ -30,7 +30,7 @@ namespace auth_infra.Services
 
                 password = this._cryptoService.Encrypt(password);
 
-                var _acount = await _acountService.find(email, password);
+                var _acount = await _acountService.getAcount(email, password);
 
                 if (_acount != null) {
 

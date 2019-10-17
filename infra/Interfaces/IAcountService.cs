@@ -11,5 +11,6 @@ namespace auth_infra.Interfaces
         Task<IEnumerable<Acount>> getAll();
         Task<Acount> getById(int id);
         Task<Acount> getByEmail(string email);
+        Task<Acount> getAcount(string email, string password);
     }
 }

@@ -51,5 +51,12 @@ namespace auth_infra.Services
         {
             return await _context.Acounts.Where(x => x.id == id).FirstOrDefaultAsync();
         }
+
+        public async Task<Acount> getAcount(string email, string password)
+        {
+            return await _context.Acounts.FirstOrDefaultAsync(
+                    x => x.email == email &&
+                    x.password == password);
+        }
     }
 }
