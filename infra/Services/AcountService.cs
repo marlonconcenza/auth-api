@@ -25,7 +25,7 @@ namespace auth_infra.Services
             acount.password = this._cryptoService.Encrypt(acount.password);
             acount.createdAt = DateTime.Now;
 
-            var exists = await this.find(acount.email, acount.password);
+            var exists = await this.getByEmail(acount.email);
 
             if (exists != null) {
                 throw new Exception("Acount already exists");
@@ -36,16 +36,20 @@ namespace auth_infra.Services
             return acount;
         }
 
-        public async Task<Acount> find(string email, string password)
+        public async Task<Acount> getByEmail(string email)
         {
             return await _context.Acounts.FirstOrDefaultAsync(
-                    x => x.email == email &&
-                     x.password == password);       
+                    x => x.email == email);       
         }
 
         public async Task<IEnumerable<Acount>> getAll()
         {
             return await _context.Acounts.ToListAsync();
+        }
+
+        public async Task<Acount> getById(int id)
+        {
+            return await _context.Acounts.Where(x => x.id == id).FirstOrDefaultAsync();
         }
     }
 }

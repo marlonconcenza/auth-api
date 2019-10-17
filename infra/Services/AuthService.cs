@@ -37,7 +37,7 @@ namespace auth_infra.Services
                     _auth = new Auth();
                     _auth.id = _acount.id;
                     _auth.email = email;
-                    _auth.token = this._tokenService.createToken(JsonConvert.SerializeObject(_acount));
+                    _auth.token = this._tokenService.createToken(_acount);
                 }
 
             } catch(Exception ex) {

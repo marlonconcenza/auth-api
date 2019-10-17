@@ -9,6 +9,7 @@ namespace auth_infra.Interfaces
     {
         Task<Acount> add(Acount acount);
         Task<IEnumerable<Acount>> getAll();
-        Task<Acount> find(string email, string password);
+        Task<Acount> getById(int id);
+        Task<Acount> getByEmail(string email);
     }
 }

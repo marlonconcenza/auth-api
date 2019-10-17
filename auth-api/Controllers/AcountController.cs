@@ -19,6 +19,7 @@ namespace auth_api.Controllers
             this._acountService = acountService;
         }
 
+        [Authorize(Roles = Role.Admin)]
         [HttpPost]
         public async Task<IActionResult> add([FromBody] Acount acount)
         {
@@ -47,7 +48,41 @@ namespace auth_api.Controllers
             }
 
             return BadRequest(response);
+        }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> getById(int id)
+        {
+            Response response = new Response();
+            response.path = Request.Path.Value;
+            response.success = false;
+
+            try
+            {
+                var acount = await _acountService.getById(id);
+
+                if (acount == null) {
+                    response.message = "Acount not found";
+                    return NotFound(response);
+                }
+
+                // only allow admins to access other acount records
+                var currentAcountId = int.Parse(User.Identity.Name);
+                if (id != currentAcountId && !User.IsInRole(Role.Admin)) {
+                    return Forbid();
+                }
+
+                response.data = acount;
+                response.id = acount.id;
+
+                return Ok(response);
+            } 
+            catch (Exception ex)
+            {
+                response.message = ex.Message;
+            }
+
+            return BadRequest(response);            
         }
     }
 }
