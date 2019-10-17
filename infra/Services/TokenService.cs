@@ -17,7 +17,7 @@ namespace auth_infra.Services
         {
             this._configuration = configuration;
         }
-        public string createToken(Acount acount) {
+        public string createToken(Account account) {
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(this._configuration["AppSettings:Secret"]);
@@ -26,8 +26,8 @@ namespace auth_infra.Services
             {
                 Subject = new ClaimsIdentity(new Claim[] 
                 {
-                    new Claim(ClaimTypes.Name, acount.id.ToString()),
-                    new Claim(ClaimTypes.Role, acount.role)
+                    new Claim(ClaimTypes.Name, account.id.ToString()),
+                    new Claim(ClaimTypes.Role, account.role)
                 }),
                 Expires = DateTime.UtcNow.AddHours(4),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

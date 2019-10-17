@@ -10,18 +10,18 @@ namespace auth_api.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class AcountController : ControllerBase
+    public class AccountController : ControllerBase
     {
-        public IAcountService _acountService { get; set; }
+        public IAccountService _accountService { get; set; }
 
-        public AcountController(IAcountService acountService)
+        public AccountController(IAccountService accountService)
         {
-            this._acountService = acountService;
+            this._accountService = accountService;
         }
 
         [Authorize(Roles = Role.Admin)]
         [HttpPost]
-        public async Task<IActionResult> add([FromBody] Acount acount)
+        public async Task<IActionResult> add([FromBody] Account account)
         {
             Response response = new Response();
             response.path = Request.Path.Value;
@@ -29,14 +29,14 @@ namespace auth_api.Controllers
 
             try
             {
-                if (acount != null) {
+                if (account != null) {
 
-                    await _acountService.add(acount);
+                    await _accountService.add(account);
 
-                    acount.password = null;
+                    account.password = null;
                     response.success = true;
-                    response.data = acount;
-                    response.id = acount.id;
+                    response.data = account;
+                    response.id = account.id;
 
                     return Ok(response);  
                 }
@@ -59,21 +59,21 @@ namespace auth_api.Controllers
 
             try
             {
-                var acount = await _acountService.getById(id);
+                var account = await _accountService.getById(id);
 
-                if (acount == null) {
-                    response.message = "Acount not found";
+                if (account == null) {
+                    response.message = "Account not found";
                     return NotFound(response);
                 }
 
-                // only allow admins to access other acount records
-                var currentAcountId = int.Parse(User.Identity.Name);
-                if (id != currentAcountId && !User.IsInRole(Role.Admin)) {
+                // only allow admins to access other account records
+                var currentAccountId = int.Parse(User.Identity.Name);
+                if (id != currentAccountId && !User.IsInRole(Role.Admin)) {
                     return Forbid();
                 }
 
-                response.data = acount;
-                response.id = acount.id;
+                response.data = account;
+                response.id = account.id;
                 response.success = true;
 
                 return Ok(response);
@@ -100,9 +100,9 @@ namespace auth_api.Controllers
 
             try
             {
-                var acounts = await _acountService.getAll(init, offset);
+                var accounts = await _accountService.getAll(init, offset);
 
-                response.data = acounts;
+                response.data = accounts;
                 response.success = true;
 
                 return Ok(response);

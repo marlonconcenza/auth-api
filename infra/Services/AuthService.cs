@@ -9,13 +9,13 @@ namespace auth_infra.Services
 {
     public class AuthService : IAuthService
     {
-        private IAcountService _acountService { get; }
+        private IAccountService _accountService { get; }
         private ICryptoService _cryptoService { get; }
         private ITokenService _tokenService { get; }
 
-        public AuthService(IAcountService acountService, ICryptoService cryptoService, ITokenService tokenService)
+        public AuthService(IAccountService accountService, ICryptoService cryptoService, ITokenService tokenService)
         {
-            this._acountService = acountService;
+            this._accountService = accountService;
             this._cryptoService = cryptoService;
             this._tokenService = tokenService;
         }
@@ -27,14 +27,14 @@ namespace auth_infra.Services
 
                 password = this._cryptoService.Encrypt(password);
 
-                var _acount = await _acountService.getAcount(email, password);
+                var _account = await _accountService.getAccount(email, password);
 
-                if (_acount != null) {
+                if (_account != null) {
 
                     _auth = new Auth();
-                    _auth.id = _acount.id;
+                    _auth.id = _account.id;
                     _auth.email = email;
-                    _auth.token = this._tokenService.createToken(_acount);
+                    _auth.token = this._tokenService.createToken(_account);
                 }
 
             } catch(Exception ex) {

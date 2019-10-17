@@ -63,11 +63,11 @@ namespace auth_api
                 });
             });
 
-            services.AddDbContext<AcountContext>(options =>
+            services.AddDbContext<AccountContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
                     
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IAcountService, AcountService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICryptoService, CryptoService>();
             services.AddScoped<ITokenService, TokenService>();
 

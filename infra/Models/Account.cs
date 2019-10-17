@@ -2,7 +2,7 @@ using System;
 
 namespace auth_infra.Models
 {
-    public class Acount
+    public class Account
     {
         public int id { get; set; }
         public string email { get; set; }

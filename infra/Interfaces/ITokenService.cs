@@ -5,6 +5,6 @@ namespace auth_infra.Interfaces
 {
     public interface ITokenService
     {
-        string createToken(Acount acount);
+        string createToken(Account account);
     }
 }
