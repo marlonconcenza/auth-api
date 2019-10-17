@@ -74,6 +74,36 @@ namespace auth_api.Controllers
 
                 response.data = acount;
                 response.id = acount.id;
+                response.success = true;
+
+                return Ok(response);
+            } 
+            catch (Exception ex)
+            {
+                response.message = ex.Message;
+            }
+
+            return BadRequest(response);            
+        }
+
+        [Authorize(Roles = Role.Admin)]
+        [HttpGet("{init}/{offset}")]
+        public async Task<IActionResult> get(int init, int offset)
+        {
+            if (init < 0 || offset <= 0) {
+                return BadRequest();
+            }
+
+            Response response = new Response();
+            response.path = Request.Path.Value;
+            response.success = false;
+
+            try
+            {
+                var acounts = await _acountService.getAll(init, offset);
+
+                response.data = acounts;
+                response.success = true;
 
                 return Ok(response);
             } 
