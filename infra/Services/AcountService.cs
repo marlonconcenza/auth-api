@@ -11,8 +11,8 @@ namespace auth_infra.Services
 {
     public class AcountService : IAcountService
     {
-        private readonly ICryptoService _cryptoService;
-        private readonly AcountContext _context;
+        private ICryptoService _cryptoService { get; }
+        private AcountContext _context { get; }
 
         public AcountService(AcountContext context, ICryptoService cryptoService)
         {
@@ -44,7 +44,11 @@ namespace auth_infra.Services
 
         public async Task<IEnumerable<Acount>> getAll(int init, int offset)
         {
-            return await _context.Acounts.Skip(init).Take(offset).ToListAsync();
+            return await _context.Acounts
+                            .OrderBy(x => x.id)
+                            .Skip(init)
+                            .Take(offset)
+                            .ToListAsync();
         }
 
         public async Task<Acount> getById(int id)

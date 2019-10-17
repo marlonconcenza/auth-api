@@ -9,14 +9,11 @@ namespace auth_infra.Services
 {
     public class AuthService : IAuthService
     {
-        private IAcountService _acountService;
-        private ICryptoService _cryptoService;
-        private ITokenService _tokenService;
+        private IAcountService _acountService { get; }
+        private ICryptoService _cryptoService { get; }
+        private ITokenService _tokenService { get; }
 
-        public AuthService(IConfiguration configuration, 
-                IAcountService acountService, 
-                ICryptoService cryptoService,
-                ITokenService tokenService)
+        public AuthService(IAcountService acountService, ICryptoService cryptoService, ITokenService tokenService)
         {
             this._acountService = acountService;
             this._cryptoService = cryptoService;
