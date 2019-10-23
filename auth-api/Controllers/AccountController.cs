@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace auth_api.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = Role.Admin)]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -19,8 +19,7 @@ namespace auth_api.Controllers
             this._accountService = accountService;
         }
 
-        [Authorize(Roles = Role.Admin)]
-        [HttpPost]
+        [HttpPost, Authorize(Policy = "CreateAccountPolicy")]
         public async Task<IActionResult> add([FromBody] Account account)
         {
             Response response = new Response();

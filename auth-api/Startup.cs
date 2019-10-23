@@ -3,8 +3,10 @@ using System.Linq;
 using System.Text;
 using auth_infra.Data;
 using auth_infra.Interfaces;
+using auth_infra.Requirements.Account;
 using auth_infra.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +51,12 @@ namespace auth_api
                 };
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CreateAccountPolicy", policy =>
+                    policy.Requirements.Add(new CreateAccountRequirement("canCreateAccount")));
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Auth API", Version = "v1" });
@@ -70,6 +78,8 @@ namespace auth_api
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICryptoService, CryptoService>();
             services.AddScoped<ITokenService, TokenService>();
+            
+            services.AddScoped<IAuthorizationHandler, CreateAccountRequirementHandler>();
 
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

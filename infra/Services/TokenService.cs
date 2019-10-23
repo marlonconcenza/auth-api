@@ -27,7 +27,8 @@ namespace auth_infra.Services
                 Subject = new ClaimsIdentity(new Claim[] 
                 {
                     new Claim(ClaimTypes.Name, account.id.ToString()),
-                    new Claim(ClaimTypes.Role, account.role)
+                    new Claim(ClaimTypes.Role, account.role),
+                    new Claim("permissions", account.permission)
                 }),
                 Expires = DateTime.UtcNow.AddHours(4),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
