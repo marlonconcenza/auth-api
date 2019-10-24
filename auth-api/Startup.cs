@@ -80,8 +80,6 @@ namespace auth_api
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICryptoService, CryptoService>();
             services.AddScoped<ITokenService, TokenService>();
-            //services.AddScoped<IPermissionService, PermissionService>();
-            
             services.AddScoped<IAuthorizationHandler, RequirementHandler>();
 
             services.AddCors();

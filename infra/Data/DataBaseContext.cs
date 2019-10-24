@@ -13,6 +13,10 @@ namespace auth_infra.Data
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Permission> Permissions { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Account>().ToTable("Account");
