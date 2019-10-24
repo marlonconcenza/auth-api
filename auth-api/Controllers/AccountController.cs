@@ -30,7 +30,7 @@ namespace auth_api.Controllers
             {
                 if (account != null) {
 
-                    await _accountService.add(account);
+                    await _accountService.create(account);
 
                     account.password = null;
                     response.success = true;
@@ -49,7 +49,7 @@ namespace auth_api.Controllers
             return BadRequest(response);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize(Policy = "ReadAccountPolicy")]
         public async Task<IActionResult> getById(int id)
         {
             Response response = new Response();
@@ -85,8 +85,7 @@ namespace auth_api.Controllers
             return BadRequest(response);            
         }
 
-        [Authorize(Roles = Role.Admin)]
-        [HttpGet("{init}/{offset}")]
+        [HttpGet("{init}/{offset}"), Authorize(Policy = "ReadAccountPolicy")]
         public async Task<IActionResult> get(int init, int offset)
         {
             if (init < 0 || offset <= 0) {

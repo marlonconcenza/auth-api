@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -22,18 +23,35 @@ namespace auth_infra.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(this._configuration["AppSettings:Secret"]);
             
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[] 
-                {
-                    new Claim(ClaimTypes.Name, account.id.ToString()),
-                    new Claim(ClaimTypes.Role, account.role),
-                    new Claim("permissions", account.permission)
-                }),
-                Expires = DateTime.UtcNow.AddHours(4),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
+            // var tokenDescriptor = new SecurityTokenDescriptor
+            // {
+            //     Subject = new ClaimsIdentity(new Claim[] 
+            //     {
+            //         new Claim(ClaimTypes.Name, account.id.ToString()),
+            //         new Claim(ClaimTypes.Role, account.role),
+            //         new Claim("permissions", account.permissions != null ? account.permissions : string.Empty)
+            //     }),
+            //     Expires = DateTime.UtcNow.AddHours(4),
+            //     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            // };
 
+            var tokenDescriptor = new SecurityTokenDescriptor();
+            tokenDescriptor.Expires = DateTime.UtcNow.AddHours(4);
+            tokenDescriptor.SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
+            
+            var claims = new List<Claim>();
+
+            claims.Add(new Claim(ClaimTypes.Name, account.id.ToString()));
+            claims.Add(new Claim(ClaimTypes.Role, account.role));
+
+            if (account.permissions != null) {
+                foreach (var item in account.permissions) {
+                    claims.Add(new Claim("permissions", item.permission));
+                }
+            }
+
+            tokenDescriptor.Subject = new ClaimsIdentity(claims);
+            
             var token = tokenHandler.CreateToken(tokenDescriptor);
             
             return tokenHandler.WriteToken(token);

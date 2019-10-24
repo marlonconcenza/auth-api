@@ -4,17 +4,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace auth_infra.Data
 {
-    public class AccountContext : DbContext
+    public class DataBaseContext : DbContext
     {
-        public AccountContext(DbContextOptions<AccountContext> options) : base(options)
+        public DataBaseContext(DbContextOptions<DataBaseContext> options) : base(options)
         {
         }
 
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Account>().ToTable("Account");
+            modelBuilder.Entity<Permission>().ToTable("Permission");
         }
     }
 }

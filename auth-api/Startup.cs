@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using auth_infra.Data;
 using auth_infra.Interfaces;
-using auth_infra.Requirements.Account;
+using auth_infra.Requirements;
 using auth_infra.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -53,8 +53,10 @@ namespace auth_api
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("CreateAccountPolicy", policy =>
-                    policy.Requirements.Add(new CreateAccountRequirement("canCreateAccount")));
+                options.AddPolicy("ReadAccountPolicy", policy => policy.Requirements.Add(new Requirement("canReadAccount")));
+                options.AddPolicy("CreateAccountPolicy", policy => policy.Requirements.Add(new Requirement("canCreateAccount")));
+                options.AddPolicy("UpdateAccountPolicy", policy => policy.Requirements.Add(new Requirement("canUpdateAccount")));
+                options.AddPolicy("DeleteAccountPolicy", policy => policy.Requirements.Add(new Requirement("canDeleteAccount")));
             });
 
             services.AddSwaggerGen(c =>
@@ -71,15 +73,16 @@ namespace auth_api
                 });
             });
 
-            services.AddDbContext<AccountContext>(options =>
+            services.AddDbContext<DataBaseContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
                     
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICryptoService, CryptoService>();
             services.AddScoped<ITokenService, TokenService>();
+            //services.AddScoped<IPermissionService, PermissionService>();
             
-            services.AddScoped<IAuthorizationHandler, CreateAccountRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, RequirementHandler>();
 
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

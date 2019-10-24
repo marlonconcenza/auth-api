@@ -12,15 +12,15 @@ namespace auth_infra.Services
     public class AccountService : IAccountService
     {
         private ICryptoService _cryptoService { get; }
-        private AccountContext _context { get; }
+        private DataBaseContext _context { get; }
 
-        public AccountService(AccountContext context, ICryptoService cryptoService)
+        public AccountService(DataBaseContext context, ICryptoService cryptoService)
         {
             this._context = context;
             this._cryptoService = cryptoService;
         }
 
-        public async Task<Account> add(Account account)
+        public async Task<Account> create(Account account)
         {
             account.password = this._cryptoService.Encrypt(account.password);
             account.createdAt = DateTime.Now;
@@ -33,6 +33,7 @@ namespace auth_infra.Services
             
             this._context.Accounts.Add(account);
             await this._context.SaveChangesAsync();
+
             return account;
         }
 
@@ -58,9 +59,10 @@ namespace auth_infra.Services
 
         public async Task<Account> getAccount(string email, string password)
         {
-            return await _context.Accounts.FirstOrDefaultAsync(
-                    x => x.email == email &&
-                    x.password == password);
+            return await _context.Accounts
+                .Where(x => x.email == email && x.password == password)
+                .Include(x => x.permissions)
+                .FirstOrDefaultAsync();
         }
     }
 }
